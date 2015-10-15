@@ -5,8 +5,9 @@ port=$(<nc_port_number)
 nc -lk $port | while IFS=, read -a p
 do
 	msg=${p:0:4}
-	pid=${p:5:${#p}}
+	address=${p:5:29}
+	pid=${p:30:${#p}}
 	if [ $msg = "MEOW" ]; then
-		kill -2 $pid
+		ssh $address "kill -2 $pid"
 	fi
 done

@@ -17,12 +17,13 @@ n_to_listy() {
 
 g_to_listy() {
 	echo "G $node name" | nc $listy_node $port
+	exit 0
 }
 
 attack_mouse() {
 	sleep 6
-	trap 'g_to_listy' SIGINT 
-	echo "MEOW $$" | nc $node $port
+	trap 'g_to_listy' SIGINT
+	echo "MEOW $node $$" | nc -w 8 $node $port
 }
 
 search_node() {

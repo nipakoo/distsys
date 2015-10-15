@@ -1,65 +1,71 @@
 #!/bin/bash
 
 IFS=$'\n' read -d '' -r -a lines < ukkonodes
-nodes=(${lines[@]:2})
 
 cmd=""
+cmd_idx=0
+line_idx=2
 
 mouse_found="neither"
 
 send_search() {
-	./chase_cat.sh S ${cmd:10:15} $1
+	./chase_cat.sh S ${cmd:29:34} $1 &
 }
 
 send_attack() {
-	./chase_cat.sh A ${cmd:10:15} $mouse_found
+	./chase_cat.sh A ${cmd:29:34} $mouse_found &
 }
 
 handle_f_msg() {
-	if [ mouse_found = "neither" ]; then
-		mouse_found=${cmd:2:9}
+	if [ $mouse_found == "neither" ]; then
+		mouse_found=${cmd:2:26}
+		if [ ${cmd:29:34} == "Jazzy" ]; then
+			cmd="                             Catty"
+		else
+			cmd="                             Jazzy"
+		fi
+		send_search $mouse_found
 	else
 		send_attack
 	fi
 }
 
 handle_n_msg() {
-	if [ mouse_found = "neither" ]; then
-		send search $1
-	else
-		send_search mouse_found
+	if [ $mouse_found == "neither" ]; then
+		line_idx=$((line_idx+1))
+		send_search $1
 	fi
 }
 
 get_command() {
 	IFS=$'\n' read -d '' -r -a cmds < cmsg
-	cmd=${cmds[0]}
-	new_file=(${cmds[@]:1})
-	echo ${new_file[0]}
-	printf "%s\n" "${new_file[@]}" > cmsg
+	cmd=${cmds[$cmd_idx]}
 }
 
-printf "%s" $(hostname) > listy_location
-./listy.sh
+./listy.sh &
 
+cmd="                             Jazzy"
 send_search ${lines[0]}
+cmd="                             Catty"
 send_search ${lines[1]}
 
-for i in "${nodes[@]}"
-do
+while : ; do
 	while : ; do
 		get_command
 		size=${#cmd}
-		if [ size != 0 ]; then
+		if [ $size -ne 0 ]; then
+			cmd_idx=$((cmd_idx+1))
 			break;
 		fi
 	done
 	
 	case ${cmd:0:1} in
 		F) handle_f_msg ;;
-		N) handle_n_msg i ;;
+		N) handle_n_msg ${lines[$line_idx]} ;;
 		G) echo "MOUSE DESTROYED" ;;
 	esac
+
+
 
 	sleep 4
 done
