@@ -16,14 +16,14 @@ n_to_listy() {
 }
 
 g_to_listy() {
-	echo "G $node name" | nc $listy_node $port
+	echo "G $node $name" | nc $listy_node $port
 	exit 0
 }
 
 attack_mouse() {
 	sleep 6
 	trap 'g_to_listy' SIGINT
-	echo "MEOW $node $$" | nc -w 8 $node $port
+	echo "MEOW $$" | nc -w 8 $node $port
 }
 
 search_node() {
@@ -36,7 +36,7 @@ search_node() {
 	fi
 }
 
-if [ $cmd = "S" ]; then
+if [ "$cmd" == "S" ]; then
 	search_node
 else
 	attack_mouse

@@ -13,7 +13,10 @@ send_search() {
 }
 
 send_attack() {
-	./chase_cat.sh A ${cmd:29:34} $mouse_found &
+	scp chase_cat.sh $mouse_found:
+	scp listy_location $mouse_found:
+	scp nc_port_number $mouse_found:
+	ssh $mouse_found ./chase_cat.sh "A" "${cmd:29:34}" "$mouse_found"
 }
 
 handle_f_msg() {
@@ -42,6 +45,11 @@ get_command() {
 	cmd=${cmds[$cmd_idx]}
 }
 
+finish_execution() {
+	echo "MOUSE DESTROYED"
+	exit 0
+}
+
 ./listy.sh &
 
 cmd="                             Jazzy"
@@ -62,7 +70,7 @@ while : ; do
 	case ${cmd:0:1} in
 		F) handle_f_msg ;;
 		N) handle_n_msg ${lines[$line_idx]} ;;
-		G) echo "MOUSE DESTROYED" ;;
+		G) finish_execution ;;
 	esac
 
 
