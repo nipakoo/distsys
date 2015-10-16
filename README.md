@@ -8,3 +8,4 @@
 - insert the address of current node to the listy_location file
 - run cordy.sh
 
+Now Cordy will take charge of the hunt and will go through listed nodes until the mouse is found. After Cordy receives a word of a successfull attack, he will print out MOUSE DESTROYED and end excecution.
