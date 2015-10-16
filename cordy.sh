@@ -34,7 +34,7 @@ handle_f_msg() {
 }
 
 handle_n_msg() {
-	if [ $mouse_found == "neither" ]; then
+	if [[ $mouse_found == "neither" && $line_idx -lt ${#lines[@]} ]]; then
 		line_idx=$((line_idx+1))
 		send_search $1
 	fi
